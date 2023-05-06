@@ -51,7 +51,7 @@ func (cmd *CompletionCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ..
 		fmt.Fprintln(os.Stderr, "Error: OPENAI_API_KEY environment variable not set.")
 		return subcommands.ExitFailure
 	}
-	requestBody := strings.NewReader(fmt.Sprintf(`{"model": "text-curie-001", "prompt": "%s",  "temperature":0,
+	requestBody := strings.NewReader(fmt.Sprintf(`{"model": "text-davinci-003", "prompt": "%s",  "temperature":0,
   "max_tokens":1000,
   "top_p":1.0,
   "frequency_penalty":0.2,

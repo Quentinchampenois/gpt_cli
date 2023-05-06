@@ -53,3 +53,4 @@ Build project and use cli
 * [Osinet CLI with google/subcommands](https://osinet.fr/go/articles/cli-google-subcommands/)
 * OpenAI Documentation
   * [Models](https://platform.openai.com/docs/models/model-endpoint-compatibility)
+  * [API Reference](https://platform.openai.com/docs/api-reference/chat/create)
