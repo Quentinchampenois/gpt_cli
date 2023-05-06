@@ -14,10 +14,26 @@ CLI allows to interact with different API endpoint :
 
 **Images**
   ```
-    gpt_api image generate "<TYPE YOUR PROMPT>"
+    gpt_api image "<TYPE YOUR PROMPT>"
   ```
 It returns a list of urls of your generated image and save in folder `api/images/`
 
+Example:
+```bash
+./gpt_api image "A mouse driving a car"
+```
+
+
+**Completion**
+  ```
+    gpt_api program "<TYPE YOUR PROMPT>"
+  ```
+It returns a list of urls of your generated program and save in folder `api/completions/`
+
+Example:
+```bash
+./gpt_api program "Create a Ruby REST API using Sinatra with JWT authentication"
+```
 
 ## Getting started
 
@@ -25,6 +41,11 @@ It returns a list of urls of your generated image and save in folder `api/images
 * OpenAI API Key, [see documentation](https://platform.openai.com/overview)
 * Go version `> 1.20`
 
+### Run locally
+
+Build project and use cli 
+
+`go build . && ./gpt_api`
 
 ## Resources
 
