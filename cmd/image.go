@@ -25,13 +25,17 @@ $ image "a horse in a house"
 `
 }
 
-func (g *ImageCommand) SetFlags(fs *flag.FlagSet) {}
+func (cmd *ImageCommand) SetFlags(fs *flag.FlagSet) {}
 
-func (g *ImageCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (cmd *ImageCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if f.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Missing prompt argument, please refer to the help section : ")
-		fmt.Fprintln(os.Stderr, g.Usage())
+		fmt.Fprintln(os.Stderr, cmd.Usage())
 		return subcommands.ExitUsageError
+	}
+
+	if ctx.Value(VerboseKey).(bool) {
+		fmt.Printf("In %s.\n", cmd.Name())
 	}
 
 	prompt := f.Arg(0)
