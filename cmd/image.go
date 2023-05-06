@@ -6,13 +6,29 @@ import (
 	"fmt"
 	"github.com/google/subcommands"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 )
 
+const apiEndpoint = "https://api.openai.com/v1/images/generations"
+
+type ImageResponse struct {
+	Created int                 `json:"created"`
+	Data    []map[string]string `json:"data"`
+}
+
 type ImageCommand struct{}
+
+func (cmd *ImageCommand) GetApiKey() string {
+	if apiKey := os.Getenv("OPENAI_API_KEY"); apiKey != "" {
+		return apiKey
+	}
+
+	return ""
+}
 
 func (*ImageCommand) Name() string     { return "image" }
 func (*ImageCommand) Synopsis() string { return "Generate a new image from the given prompt" }
@@ -34,16 +50,9 @@ func (cmd *ImageCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...inte
 		return subcommands.ExitUsageError
 	}
 
-	if ctx.Value(VerboseKey).(bool) {
-		fmt.Printf("In %s.\n", cmd.Name())
-	}
-
 	prompt := f.Arg(0)
 
-	// Set up API request
-	apiEndpoint := "https://api.openai.com/v1/images/generations"
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
+	if cmd.GetApiKey() == "" {
 		fmt.Fprintln(os.Stderr, "Error: OPENAI_API_KEY environment variable not set.")
 		return subcommands.ExitFailure
 	}
@@ -54,10 +63,10 @@ func (cmd *ImageCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...inte
 		return subcommands.ExitFailure
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", apiKey))
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", cmd.GetApiKey()))
 
-	// Send API request
 	client := &http.Client{}
+	log.Println("Sending POST request on OpenAI Image Endpoint...")
 	response, err := client.Do(request)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error sending API request: %v\n", err)
@@ -70,10 +79,11 @@ func (cmd *ImageCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...inte
 		fmt.Fprintf(os.Stderr, "API request failed with status code %d\n", response.StatusCode)
 		return subcommands.ExitFailure
 	}
-	fmt.Println("API response:")
-	fmt.Println(response.Body)
 
-	resFile, err := os.Create(fmt.Sprintf("./api/images/res-%s.json", time.Now().Format("01-02-2006")))
+	log.Println("Response successfully received")
+
+	filename := fmt.Sprintf("./api/images/res-%s.json", time.Now().Format("2006-02-01-15-04-05"))
+	resFile, err := os.Create(filename)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%v\n", err.Error())
 		return subcommands.ExitFailure
@@ -90,6 +100,8 @@ func (cmd *ImageCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...inte
 		_, _ = fmt.Fprintf(os.Stderr, "%v\n", err.Error())
 		return subcommands.ExitFailure
 	}
+	log.Println(fmt.Sprintf("Saving response in file : %s", filename))
+	log.Println("End of command")
 
 	return subcommands.ExitSuccess
 }
