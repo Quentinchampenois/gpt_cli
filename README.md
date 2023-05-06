@@ -51,3 +51,5 @@ Build project and use cli
 
 * ChatGPT
 * [Osinet CLI with google/subcommands](https://osinet.fr/go/articles/cli-google-subcommands/)
+* OpenAI Documentation
+  * [Models](https://platform.openai.com/docs/models/model-endpoint-compatibility)
