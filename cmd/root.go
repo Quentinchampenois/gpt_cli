@@ -18,6 +18,7 @@ func Execute(ctx context.Context) subcommands.ExitStatus {
 		subcommands.HelpCommand(),
 		&ImageCommand{},
 		&CompletionCommand{},
+		&CorrectCommand{},
 	} {
 		subcommands.Register(command, "")
 	}

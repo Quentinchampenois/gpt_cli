@@ -35,6 +35,17 @@ Example:
 ./gpt_api program "Create a Ruby REST API using Sinatra with JWT authentication"
 ```
 
+**Correction**
+  ```
+    gpt_api correct "<TYPE YOUR PROMPT>"
+  ```
+It returns a edited version of given input in `api/corrects/`
+
+Example:
+```bash
+./gpt_api correct "I wuld like to corect this input"
+```
+
 ## Getting started
 
 ### Requirements
