@@ -15,9 +15,9 @@ import (
 
 const completionApiEndpoint = "https://api.openai.com/v1/completions"
 
-type ProgramCommand struct{}
+type CompletionCommand struct{}
 
-func (cmd *ProgramCommand) GetApiKey() string {
+func (cmd *CompletionCommand) GetApiKey() string {
 	if apiKey := os.Getenv("OPENAI_API_KEY"); apiKey != "" {
 		return apiKey
 	}
@@ -25,20 +25,20 @@ func (cmd *ProgramCommand) GetApiKey() string {
 	return ""
 }
 
-func (*ProgramCommand) Name() string     { return "program" }
-func (*ProgramCommand) Synopsis() string { return "Generate a new program from the given prompt" }
-func (*ProgramCommand) Usage() string {
-	return `[HELP] program <prompt>
-Generate an image from the given prompt.
+func (*CompletionCommand) Name() string     { return "completion" }
+func (*CompletionCommand) Synopsis() string { return "Complete the given prompt" }
+func (*CompletionCommand) Usage() string {
+	return `[HELP] completion <prompt>
+Generate a resume, a code base, or other based on the given prompt.
 
 example : 
-$ image "a horse in a house"	
+$ completion "Create a Ruby REST API with JWT authentication using Sinatra"	
 `
 }
 
-func (cmd *ProgramCommand) SetFlags(fs *flag.FlagSet) {}
+func (cmd *CompletionCommand) SetFlags(fs *flag.FlagSet) {}
 
-func (cmd *ProgramCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (cmd *CompletionCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if f.NArg() != 1 {
 		fmt.Fprintln(os.Stderr, "Missing prompt argument, please refer to the help section : ")
 		fmt.Fprintln(os.Stderr, cmd.Usage())
@@ -51,7 +51,7 @@ func (cmd *ProgramCommand) Execute(ctx context.Context, f *flag.FlagSet, _ ...in
 		fmt.Fprintln(os.Stderr, "Error: OPENAI_API_KEY environment variable not set.")
 		return subcommands.ExitFailure
 	}
-	requestBody := strings.NewReader(fmt.Sprintf(`{"model": "text-davinci-003", "prompt": "%s",  "temperature":0,
+	requestBody := strings.NewReader(fmt.Sprintf(`{"model": "text-curie-001", "prompt": "%s",  "temperature":0,
   "max_tokens":1000,
   "top_p":1.0,
   "frequency_penalty":0.2,
